@@ -56,10 +56,9 @@ class BaseAdapter(object):
         print("Applied {}".format(name))
 
     def get_migrations_to_downgrade(self, downgrade_to):
-        sql = "SELECT name, id FROM {} WHERE applied_at >= %s ORDER BY id DESC".format(self.table_name)
+        sql = "SELECT name, id FROM {} WHERE id >= %s ORDER BY id DESC".format(self.table_name)
         cursor = self._client.cursor()
-        downgrade_to = datetime.fromtimestamp(int(downgrade_to))
-        cursor.execute(sql, [downgrade_to.isoformat(), ])
+        cursor.execute(sql, [downgrade_to, ])
         migrations = []
         for _row in cursor.fetchall():
             migrations.append((_row[0], _row[1]))

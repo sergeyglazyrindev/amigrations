@@ -17,6 +17,8 @@ class TestMigrations(TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.migration_path)
+        cursor = self.amigrations._adapter._client.cursor()
+        cursor.execute("truncate table migrations;")
 
     @property
     def c_migrations(self):
@@ -33,7 +35,6 @@ class TestMigrations(TestCase):
         with files['up'].open('w') as fpu, files['down'].open('w') as fpd:
             fpu.write('CREATE TABLE test1 (id int(11) not null AUTO_INCREMENT, PRIMARY KEY(id))')
             fpd.write('drop table test1')
-        downgrade_to = int(files['up'].name.split('_')[0]) + 1
         self.amigrations.upgrade()
         self.assertEqual(self.c_migrations, 2)
         time.sleep(5)
@@ -47,7 +48,7 @@ class TestMigrations(TestCase):
             fpd.write('alter table test1 drop column prefix')
         self.amigrations.upgrade()
         self.assertEqual(self.c_migrations, 4)
-        self.amigrations.downgrade_to(downgrade_to)
+        self.amigrations.downgrade_to(3)
         self.assertEqual(self.c_migrations, 2)
         self.amigrations.downgrade_to(0)
         self.assertEqual(self.c_migrations, 0)
