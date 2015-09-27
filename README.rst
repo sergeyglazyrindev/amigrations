@@ -16,11 +16,8 @@ Simply run in your bash:
 Usage
 -----------
 
-In your **django like manage.py** command loader, you need to trigger following:
-
 .. code-block:: python
                 
-    import os
     from amigratons import AMigrations
 
     amigrations = AMigrations('mysql://root:123456@localhost:3306/amigrations_test', path_to_folder_with_migrations)
