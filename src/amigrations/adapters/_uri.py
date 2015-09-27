@@ -82,7 +82,7 @@ class URI(object):
             append(escape(self.database, "/"))
         if self.options:
             options = ["%s=%s" % (escape(key), escape(value))
-                       for key, value in sorted(self.options.iteritems())]
+                       for key, value in sorted(self.options.items())]
             append("?")
             append("&".join(options))
         return "".join(tokens)
