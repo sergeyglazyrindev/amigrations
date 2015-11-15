@@ -17,13 +17,13 @@ class BaseAdapter(object):
     def _ensure_db_has_migration_table(self):
         cursor = self._client.cursor()
         cursor.execute("""
-        SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s AND table_name = %s;
-        """, [self._uri.database, self.table_name])
+        SELECT EXISTS( SELECT 1 FROM information_schema.tables WHERE table_schema = %s AND table_name = %s);
+        """, [self._schema, self.table_name])
         table_exists = bool(cursor.fetchone()[0])
         if not table_exists:
             table_sql = """
             CREATE TABLE {} (
-                id int(11) not null AUTO_INCREMENT,
+                id serial,
                 name varchar(100) not null default '',
                 applied_at timestamp not null default CURRENT_TIMESTAMP,
                 PRIMARY KEY (id)
@@ -39,6 +39,10 @@ class BaseAdapter(object):
         for _row in cursor.fetchall():
             migrations.append(_row[0])
         return migrations
+
+    @property
+    def _schema(self):
+        return self._uri.database
 
     @property
     def _uri(self):

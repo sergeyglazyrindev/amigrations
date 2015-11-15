@@ -33,5 +33,5 @@ setup(
         'testing': ['nose', 'mock'],
     },
     test_suite='tests',
-    install_requires=['mysqlclient==1.3.6', ]
+    install_requires=['mysqlclient==1.3.6', 'psycopg2==2.6.1']
 )
