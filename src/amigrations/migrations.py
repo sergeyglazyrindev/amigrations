@@ -37,7 +37,7 @@ class AMigrations(object):
         files = {}
         migration_folder = self.migration_folder
         if self.current_package:
-            migration_folder += self.current_package + "/"
+            migration_folder += "/" + self.current_package + "/"
         for suffix in ('up', 'down'):
             _filepath = Path(migration_folder, base_filename.format(suffix))
             with _filepath.open('w') as fp:
