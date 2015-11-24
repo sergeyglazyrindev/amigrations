@@ -1,4 +1,3 @@
-from operator import attrgetter
 import time
 from pathlib import Path
 import os
@@ -8,7 +7,7 @@ import sys
 
 
 def _get_all_migrations_from_folder(migration_folder):
-    return sorted(Path(migration_folder).glob("*.up.sql"), key=attrgetter('name'))
+    return Path(migration_folder).glob("*.up.sql")
 
 
 def _transform_file_name_to_migration_name(name):
@@ -17,9 +16,12 @@ def _transform_file_name_to_migration_name(name):
 
 class AMigrations(object):
 
-    def __init__(self, db_uri, migration_folder, table_name='migrations'):
+    def __init__(self, db_uri, migration_folder, current_package=None,
+                 table_name='migrations', supported_packages=()):
         self.db_uri = db_uri
         self.migration_folder = migration_folder
+        self.current_package = current_package if current_package in supported_packages else None
+        self.supported_packages = supported_packages
         if not os.path.exists(migration_folder):
             os.makedirs(migration_folder)
         self.table_name = table_name
@@ -33,8 +35,11 @@ class AMigrations(object):
             'down': "/**Down migration\n{}**/".format(message)
         }
         files = {}
+        migration_folder = self.migration_folder
+        if self.current_package:
+            migration_folder += self.current_package + "/"
         for suffix in ('up', 'down'):
-            _filepath = Path(self.migration_folder, base_filename.format(suffix))
+            _filepath = Path(migration_folder, base_filename.format(suffix))
             with _filepath.open('w') as fp:
                 fp.write(suffix_to_messages[suffix])
             print("Added {}".format(_filepath))
@@ -43,7 +48,7 @@ class AMigrations(object):
 
     @property
     def _adapter(self):
-        adapter = self.db_uri.split(':')[0]
+        adapter = self.db_uri.split(':')[0].split('+')[0]
         return getattr(importlib.import_module(
             '.adapters.' + adapter,
             sys.modules[__name__].__package__
@@ -51,18 +56,37 @@ class AMigrations(object):
 
     def upgrade(self):
         adapter = self._adapter
-        all_migrations = _get_all_migrations_from_folder(self.migration_folder)
+        migrations = _get_all_migrations_from_folder(self.migration_folder)
+        all_migrations = {migration.name: {
+            'package': 'main',
+            'migration': migration
+        } for migration in migrations}
+        if self.supported_packages:
+            for package in self.supported_packages:
+                package_migrations = _get_all_migrations_from_folder(self.migration_folder + "/" + package + "/")
+                all_migrations.update({
+                    migration.name: {
+                        'package': package,
+                        'migration': migration
+                    } for migration in package_migrations
+                })
+
+        sorted_migrations = sorted(all_migrations.keys())
         applied_migrations = adapter.get_applied_migrations()
-        for _migration in all_migrations:
-            migration_name = _transform_file_name_to_migration_name(_migration.name)
+        for _migration in sorted_migrations:
+            migration_name = _transform_file_name_to_migration_name(_migration)
             if migration_name in applied_migrations:
                 continue
-            adapter.apply(migration_name, _migration)
+            migration_data = all_migrations[_migration]
+            adapter.apply(migration_name, migration_data['migration'], migration_data['package'])
 
     def downgrade_to(self, downgrade_to):
         adapter = self._adapter
         applied_migrations = adapter.get_migrations_to_downgrade(downgrade_to)
         for _migration_to_downgrade in applied_migrations:
-            migration_name, migration_id = _migration_to_downgrade
-            _migration = Path(self.migration_folder, migration_name + ".down.sql")
+            migration_name, migration_id, package = _migration_to_downgrade
+            migration_folder = self.migration_folder
+            if package != 'main' and package in self.supported_packages:
+                migration_folder += "/" + package + "/"
+            _migration = Path(migration_folder, migration_name + ".down.sql")
             adapter.downgrade_migration(migration_id, _migration)

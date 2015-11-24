@@ -26,6 +26,7 @@ class BaseAdapter(object):
                 id serial,
                 name varchar(100) not null default '',
                 applied_at timestamp not null default CURRENT_TIMESTAMP,
+                package varchar(20) not null default 'main',
                 PRIMARY KEY (id)
             )
             """.format(self.table_name)
@@ -48,24 +49,24 @@ class BaseAdapter(object):
     def _uri(self):
         return URI(self.db_uri)
 
-    def apply(self, name, migration):
+    def apply(self, name, migration, package):
         cursor = self._client.cursor()
         with migration.open() as fp:
             cursor.execute(fp.read())
         name_splitted = name.split('_')
         applied_at = datetime.fromtimestamp(int(name_splitted[0]))
         cursor.execute("""
-        INSERT INTO {} (name, applied_at) VALUES(%s, %s)
-        """.format(self.table_name), [name, applied_at.isoformat()])
+        INSERT INTO {} (name, applied_at, package) VALUES(%s, %s, %s)
+        """.format(self.table_name), [name, applied_at.isoformat(), package])
         print("Applied {}".format(name))
 
     def get_migrations_to_downgrade(self, downgrade_to):
-        sql = "SELECT name, id FROM {} WHERE id >= %s ORDER BY id DESC".format(self.table_name)
+        sql = "SELECT name, id, package FROM {} WHERE id >= %s ORDER BY id DESC".format(self.table_name)
         cursor = self._client.cursor()
         cursor.execute(sql, [downgrade_to, ])
         migrations = []
         for _row in cursor.fetchall():
-            migrations.append((_row[0], _row[1]))
+            migrations.append(_row)
         return migrations
 
     def downgrade_migration(self, migration_id, migration):
