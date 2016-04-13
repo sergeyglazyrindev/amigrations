@@ -58,7 +58,7 @@ class BaseAdapter(object):
         cursor.execute("""
         INSERT INTO {} (name, applied_at, package) VALUES(%s, %s, %s)
         """.format(self.table_name), [name, applied_at.isoformat(), package])
-        print("Applied {}".format(name))
+        print("\tApplied {}".format(name))
 
     def get_migrations_to_downgrade(self, downgrade_to):
         sql = "SELECT name, id, package FROM {} WHERE id >= %s ORDER BY id DESC".format(self.table_name)
@@ -76,4 +76,4 @@ class BaseAdapter(object):
         cursor.execute("""
         DELETE FROM {} WHERE id = %s
         """.format(self.table_name), [int(migration_id), ])
-        print("Downgraded migration {}".format(migration.name))
+        print("\tDowngraded migration {}".format(migration.name))
