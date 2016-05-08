@@ -6,6 +6,8 @@ import re
 import importlib
 import sys
 
+package = sys.modules[__name__].__package__
+
 
 def _get_all_migrations_from_folder(migration_folder):
     """Simply checks folder for files which ends with up.sql
@@ -106,7 +108,7 @@ class AMigrations(object):
         adapter = self.db_uri.split(':')[0].split('+')[0]
         return getattr(importlib.import_module(
             '.adapters.' + adapter,
-            package=sys.modules[__name__].__package__
+            package=package
         ), 'Adapter')(self.db_uri, self.table_name)
 
     def upgrade(self):
