@@ -2,6 +2,14 @@
 Ascetic Migrations
 **************************************
 
+.. image:: https://api.travis-ci.org/sergeyglazyrindev/amigrations.svg
+   :target: https://travis-ci.org/sergeyglazyrindev/amigrations
+   :alt: Travis CI status
+
+.. image:: https://coveralls.io/repos/github/sergeyglazyrindev/amigrations/badge.svg?branch=master
+   :target: https://coveralls.io/github/sergeyglazyrindev/amigrations?branch=master
+   :alt: Coveralls status
+
 For my personal projects I'd like to use raw sql migrations. Django for example generates ugly
 key names: something like: key_number
 
