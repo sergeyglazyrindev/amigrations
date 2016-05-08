@@ -7,7 +7,7 @@ python:
   - "3.5"
 # command to install dependencies
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 or $TRAVIS_PYTHON_VERSION == 3.2 or $TRAVIS_PYTHON_VERSION == 3.3]]; then pip install pathlib; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]] || [[ $TRAVIS_PYTHON_VERSION == 3.2 ]] || [[ $TRAVIS_PYTHON_VERSION == 3.3 ]]; then pip install pathlib; fi
   - pip install -r requirements.txt
 sudo: false
 # command to run tests
