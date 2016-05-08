@@ -1,11 +1,13 @@
+**************************************
 Ascetic Migrations
-=============
+**************************************
 
 For my personal projects I'd like to use raw sql migrations. Django for example generates ugly
 key names: something like: key_number
 
+**************************************
 Installation
------------
+**************************************
 
 Simply run in your bash:
 
@@ -13,8 +15,9 @@ Simply run in your bash:
                 
     python setup.py install
 
+**************************************
 Usage
------------
+**************************************
 
 .. code-block:: python
                 

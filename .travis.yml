@@ -1,0 +1,17 @@
+language: python
+python:
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "pypy"
+  - "pypy3"
+# command to install dependencies
+install:
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install pathlib; fi
+  - pip install -r requirements.txt
+sudo: false
+# command to run tests
+script: make test
+after_success: coveralls

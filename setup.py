@@ -1,31 +1,38 @@
 import sys
+from setuptools import setup
 
 # dirty hack, always use wheel
 sys.argv.append('bdist_wheel')
 
-from setuptools import setup
+dependencies = ['psycopg2==2.6.1']
+if sys.version_info < (3, 0):
+    dependencies.append('pathlib==1.0.1')
 
-
-def readme():
-    with open('README.rst') as f:
-        return f.read()
 
 setup(
     name='amigrations',
     version='0.1',
-    description='Ascetic database migrations. The most ease way to power your python app with raw database migrations',
-    long_description=readme(),
+    description=('Ascetic database migrations. The most ease way to power your'
+                 ' python app with raw database migrations'),
     classifiers=[
-        'Development Status :: 0.1 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.1',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
-        'Topic :: Database',
+        'Programming Language :: Python :: 3.5',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Libraries :: Application Frameworks',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Utilities',
     ],
     url='https://github.com/sergeyglazyrindev/amigrations',
     author='Sergey Glazyrin',
     author_email='sergey.glazyrin.dev@gmail.com',
     license='MIT',
-    package_dir={'': 'src'},
     packages=['amigrations', ],
     include_package_data=True,
     zip_safe=False,
@@ -33,5 +40,8 @@ setup(
         'testing': ['nose', 'mock'],
     },
     test_suite='tests',
-    install_requires=['mysqlclient==1.3.6', 'psycopg2==2.6.1']
+    keywords=['database', 'migration'],
+    download_url=('https://github.com/sergeyglazyrindev/'
+                  'amigrations/tarball/0.1'),
+    install_requires=dependencies
 )
