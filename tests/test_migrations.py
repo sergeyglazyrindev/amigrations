@@ -23,7 +23,7 @@ class TestMigrations(TestCase):
     ):
         self.amigrations = AMigrations(
             'sqlite+pysqlite:///{}'.format(
-                os.path.join(cur_dir, 'test.db')
+                os.path.join(self.migration_path, 'test.db')
             ),
             self.migration_path,
             current_package=package,
@@ -32,7 +32,6 @@ class TestMigrations(TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.migration_path)
-        os.remove(os.path.join(cur_dir, 'test.db'))
 
     @property
     def c_migrations(self):
