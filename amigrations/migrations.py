@@ -5,7 +5,7 @@ import os
 import re
 import importlib
 
-package = 'amigrations'
+package = __package__
 
 
 def _get_all_migrations_from_folder(migration_folder):
