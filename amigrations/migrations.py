@@ -106,7 +106,7 @@ class AMigrations(object):
         adapter = self.db_uri.split(':')[0].split('+')[0]
         return getattr(importlib.import_module(
             '.adapters.' + adapter,
-            sys.modules[__name__].__package__
+            package=sys.modules[__name__].__package__
         ), 'Adapter')(self.db_uri, self.table_name)
 
     def upgrade(self):
