@@ -21,7 +21,7 @@ Simply run in your bash:
 
 .. code-block:: bash
                 
-    python setup.py install
+    pip install amigrations
 
 **************************************
 Usage
