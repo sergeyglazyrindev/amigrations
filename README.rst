@@ -40,6 +40,5 @@ Usage
         fpd.write('drop table test')
     # run db upgrade
     amigrations.upgrade()
-    # please pass timestamp which you want downgrade to. You can get it directly from db
-    # select id as downgrade_to_id from migrations
+    # please pass migration id you want to downgrade to, including
     amigrations.downgrade_to(downgrade_to_id)
