@@ -5,7 +5,7 @@ from setuptools import setup
 sys.argv.append('bdist_wheel')
 
 dependencies = ['psycopg2==2.6.1']
-if sys.version_info < (3, 0):
+if sys.version_info < (3, 4):
     dependencies.append('pathlib==1.0.1')
 
 
