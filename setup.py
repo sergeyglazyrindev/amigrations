@@ -31,7 +31,7 @@ setup(
     author='Sergey Glazyrin',
     author_email='sergey.glazyrin.dev@gmail.com',
     license='MIT',
-    packages=['amigrations', ],
+    packages=['amigrations', 'amigrations.adapters'],
     include_package_data=True,
     zip_safe=False,
     extras_require={
