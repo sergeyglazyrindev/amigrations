@@ -11,7 +11,7 @@ if sys.version_info < (3, 4):
 
 setup(
     name='amigrations',
-    version='0.3',
+    version='0.4',
     description=('Ascetic database migrations. The most ease way to power your'
                  ' python app with raw database migrations'),
     classifiers=[
@@ -40,6 +40,6 @@ setup(
     test_suite='tests',
     keywords=['database', 'migration'],
     download_url=('https://github.com/sergeyglazyrindev/'
-                  'amigrations/tarball/0.3'),
+                  'amigrations/tarball/0.4'),
     install_requires=dependencies
 )
